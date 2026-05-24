@@ -37,11 +37,11 @@ const ProjectForm = ({ project, saving, onCancel, onSubmit }) => {
   }, [project, reset]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <Input label="Project title" error={errors.title?.message} {...register('title', { required: 'Title is required' })} />
       <Textarea label="Description" rows="4" error={errors.description?.message} {...register('description', { required: 'Description is required' })} />
       <Input label="Deadline" type="date" {...register('deadline')} />
-      <div className="flex justify-end gap-3 pt-2">
+      <div className="flex justify-end gap-2 pt-1">
         <Button type="button" variant="secondary" onClick={onCancel}>
           Cancel
         </Button>
@@ -102,11 +102,11 @@ const Projects = () => {
   };
 
   return (
-    <PageTransition className="space-y-8">
+    <PageTransition className="space-y-6">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-3xl font-bold text-slate-950">Projects</h1>
-          <p className="mt-2 text-sm text-slate-500">Organize assessment milestones and product work.</p>
+          <h1 className="font-heading text-2xl font-bold text-slate-900">Projects</h1>
+          <p className="mt-1 text-[13px] text-slate-400">Organize assessment milestones and product work.</p>
         </div>
         <Button onClick={openCreate}>
           <FiPlus className="h-4 w-4" />
@@ -115,57 +115,63 @@ const Projects = () => {
       </div>
 
       {loading ? (
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map((item) => <CardSkeleton key={item} />)}
         </div>
       ) : sortedProjects.length === 0 ? (
-        <Card hover={false} className="border-dashed px-6 py-16 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-blue-50 text-blue-600">
-            <FiFolder className="h-8 w-8" />
+        <div className="rounded-xl border border-dashed border-slate-200 bg-white px-6 py-14 text-center shadow-card dark:border-[#1e293b] dark:bg-[#111827]">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 dark:bg-[#18181b]">
+            <FiFolder className="h-6 w-6 text-slate-400" />
           </div>
-          <h2 className="mt-5 text-xl font-semibold text-slate-950">No projects yet</h2>
-          <p className="mt-2 text-sm text-slate-500">Create your first project to start planning tasks with clarity.</p>
-          <Button onClick={openCreate} className="mt-6">
+          <h2 className="mt-4 font-heading text-lg font-semibold text-slate-800 dark:text-slate-200">No projects yet</h2>
+          <p className="mt-1.5 text-[13px] text-slate-400">Start by creating your first workspace project.</p>
+          <Button onClick={openCreate} className="mt-5">
             Create project
           </Button>
-        </Card>
+        </div>
       ) : (
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {sortedProjects.map((project) => (
-            <Card key={project._id} className="p-5">
-              {(() => {
-                const metrics = projectMetrics(project._id);
-                return (
-                  <>
-              <div className="flex items-start justify-between gap-3">
-                <Link to={`/projects/${project._id}`} className="min-w-0">
-                  <h2 className="truncate text-lg font-medium text-slate-950 hover:text-blue-700">{project.title}</h2>
-                  <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-500">{project.description}</p>
-                </Link>
-                <div className="flex shrink-0 gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => { setEditingProject(project); setModalOpen(true); }} aria-label="Edit project">
-                    <FiEdit2 className="h-4 w-4" />
-                  </Button>
-                  <Button variant="danger" size="icon" onClick={() => handleDelete(project._id)} aria-label="Delete project">
-                    <FiTrash2 className="h-4 w-4" />
-                  </Button>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {sortedProjects.map((project) => {
+            const metrics = projectMetrics(project._id);
+            return (
+              <Card key={project._id} className="p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <Link to={`/projects/${project._id}`} className="min-w-0">
+                    <h2 className="truncate text-[15px] font-semibold text-slate-800 hover:text-blue-600 dark:text-slate-200 dark:hover:text-blue-400">{project.title}</h2>
+                    <p className="mt-1.5 line-clamp-3 text-[13px] leading-6 text-slate-400">{project.description}</p>
+                  </Link>
+                  <div className="flex shrink-0 gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 [.group:hover_&]:opacity-100">
+                    <button
+                      type="button"
+                      onClick={() => { setEditingProject(project); setModalOpen(true); }}
+                      className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-white/[0.06]"
+                      aria-label="Edit project"
+                    >
+                      <FiEdit2 className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(project._id)}
+                      className="rounded-md p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10"
+                      aria-label="Delete project"
+                    >
+                      <FiTrash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-6 flex items-center justify-between gap-3">
-                <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
-                  <FiCalendar className="h-3.5 w-3.5" />
-                  {formatDate(getProjectDeadline(project))}
-                </span>
-                <span className="text-xs font-semibold text-slate-400">{metrics.count} tasks</span>
-              </div>
-              <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
-                <div className="h-full rounded-full bg-blue-600" style={{ width: `${metrics.progress}%` }} />
-              </div>
-                  </>
-                );
-              })()}
-            </Card>
-          ))}
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-400">
+                    <FiCalendar className="h-3 w-3" />
+                    {formatDate(getProjectDeadline(project))}
+                  </span>
+                  <span className="text-[11px] font-medium text-slate-400">{metrics.count} tasks</span>
+                </div>
+                <div className="mt-3 h-1 overflow-hidden rounded-full bg-slate-100 dark:bg-[#18181b]">
+                  <div className="h-full rounded-full bg-blue-600 transition-all duration-500" style={{ width: `${metrics.progress}%` }} />
+                </div>
+              </Card>
+            );
+          })}
         </div>
       )}
 

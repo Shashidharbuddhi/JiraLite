@@ -16,54 +16,67 @@ const Sidebar = ({ open, onClose }) => {
   const dispatch = useDispatch();
 
   const content = (
-    <aside className="flex h-full w-72 flex-col border-r border-slate-200/80 bg-white/90 shadow-xl shadow-slate-200/40 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/90 dark:shadow-slate-950/50">
-      <div className="flex h-20 items-center justify-between border-b border-slate-100 px-5">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-600 text-sm font-bold text-white shadow-lg shadow-blue-600/25">
-            JL
-          </div>
-          <div>
-            <p className="text-lg font-bold text-slate-950">JiraLite</p>
-            <p className="text-xs font-medium text-slate-500">Agile Workspace</p>
-          </div>
+    <aside className="flex h-full w-64 flex-col border-r border-slate-200 bg-white dark:border-[#1e293b] dark:bg-[#09090b]">
+      {/* Workspace identity */}
+      <div className="flex h-14 items-center gap-3 border-b border-slate-100 px-5 dark:border-[#1e293b]">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-[11px] font-bold text-white">
+          JL
         </div>
-        <button className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 md:hidden" onClick={onClose} aria-label="Close sidebar">
-          <FiX className="h-5 w-5" />
+        <div className="min-w-0">
+          <p className="truncate font-heading text-sm font-bold text-slate-900">JiraLite</p>
+          <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400">Agile Workspace</p>
+        </div>
+        <button
+          className="ml-auto rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-white/[0.04] md:hidden"
+          onClick={onClose}
+          aria-label="Close sidebar"
+        >
+          <FiX className="h-4 w-4" />
         </button>
       </div>
 
-      <nav className="flex-1 space-y-2 px-3 py-6">
+      {/* Navigation */}
+      <nav className="flex-1 space-y-0.5 px-3 py-4">
         {items.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={label}
             to={to}
             onClick={onClose}
             className={({ isActive }) =>
-              `group relative flex items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-semibold transition-all duration-300 ${
+              `group relative flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors ${
                 isActive && label !== 'Activity'
-                  ? 'bg-blue-50 text-blue-700 shadow-sm'
-                  : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-950'
+                  ? 'bg-slate-100 text-slate-900 dark:bg-white/[0.06] dark:text-white'
+                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-white/[0.03] dark:hover:text-slate-200'
               }`
             }
           >
-            <Icon className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
-            {label}
+            {({ isActive }) => (
+              <>
+                {isActive && label !== 'Activity' && (
+                  <span className="absolute left-0 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-r-full bg-blue-600" />
+                )}
+                <Icon className="h-[18px] w-[18px] shrink-0" />
+                {label}
+              </>
+            )}
           </NavLink>
         ))}
       </nav>
 
-      <div className="mx-3 mb-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-3 dark:border-slate-800 dark:bg-slate-900/80">
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Workspace</p>
-        <p className="mt-1 text-sm font-semibold text-slate-800">MERN Assessment</p>
+      {/* Workspace info */}
+      <div className="mx-3 mb-3 rounded-lg border border-slate-100 px-3 py-2.5 dark:border-[#1e293b]">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Workspace</p>
+        <p className="mt-0.5 text-[13px] font-semibold text-slate-700 dark:text-slate-300">MERN Assessment</p>
       </div>
 
-      <div className="border-t border-slate-100 p-3">
+      {/* Logout */}
+      <div className="border-t border-slate-100 px-3 py-2 dark:border-[#1e293b]">
         <button
           type="button"
           onClick={() => dispatch(logout())}
-          className="flex w-full items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-semibold text-slate-600 transition-all duration-300 hover:bg-slate-100 hover:text-slate-950"
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-white/[0.03] dark:hover:text-slate-200"
         >
-          <FiLogOut className="h-5 w-5" />
+          <FiLogOut className="h-[18px] w-[18px]" />
           Logout
         </button>
       </div>
@@ -72,12 +85,12 @@ const Sidebar = ({ open, onClose }) => {
 
   return (
     <>
-      <div className="hidden md:fixed md:inset-y-0 md:left-0 md:block">{content}</div>
+      <div className="hidden md:fixed md:inset-y-0 md:left-0 md:z-30 md:block">{content}</div>
       <AnimatePresence>
         {open && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-40 md:hidden">
-            <button className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm" onClick={onClose} aria-label="Close overlay" />
-            <motion.div initial={{ x: -288 }} animate={{ x: 0 }} exit={{ x: -288 }} transition={{ duration: 0.24 }} className="relative h-full">
+            <button className="absolute inset-0 bg-black/30" onClick={onClose} aria-label="Close overlay" />
+            <motion.div initial={{ x: -256 }} animate={{ x: 0 }} exit={{ x: -256 }} transition={{ duration: 0.2, ease: 'easeOut' }} className="relative h-full">
               {content}
             </motion.div>
           </motion.div>

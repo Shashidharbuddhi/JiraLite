@@ -1,7 +1,7 @@
 const Loader = ({ label = 'Loading' }) => (
   <div className="flex min-h-40 items-center justify-center">
-    <div className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 shadow-sm">
-      <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 border-t-blue-600" />
+    <div className="flex items-center gap-2.5 text-[13px] text-slate-400">
+      <span className="h-3.5 w-3.5 animate-spin rounded-full border-[1.5px] border-slate-300 border-t-blue-600 dark:border-slate-600 dark:border-t-blue-400" />
       {label}
     </div>
   </div>

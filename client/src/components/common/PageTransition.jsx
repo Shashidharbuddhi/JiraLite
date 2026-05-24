@@ -2,9 +2,9 @@ import { motion } from 'framer-motion';
 
 const PageTransition = ({ children, className = '' }) => (
   <motion.div
-    initial={{ opacity: 0, y: 14 }}
+    initial={{ opacity: 0, y: 6 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.35, ease: 'easeOut' }}
+    transition={{ duration: 0.25, ease: 'easeOut' }}
     className={className}
   >
     {children}

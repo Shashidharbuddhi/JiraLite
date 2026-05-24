@@ -7,11 +7,11 @@ const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#09090b]">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="md:pl-72">
+      <div className="md:pl-64">
         <Navbar onMenuClick={() => setSidebarOpen(true)} />
-        <main className="mx-auto w-full max-w-7xl px-4 py-8 md:px-6 lg:py-10">
+        <main className="mx-auto w-full max-w-7xl px-4 py-6 md:px-6 lg:py-8">
           <Outlet />
         </main>
       </div>

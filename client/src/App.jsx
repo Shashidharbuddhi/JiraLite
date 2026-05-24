@@ -27,10 +27,12 @@ const App = () => {
           duration: 3000,
           style: {
             borderRadius: '8px',
-            border: theme === 'dark' ? '1px solid #334155' : '1px solid #e2e8f0',
-            background: theme === 'dark' ? '#0f172a' : '#ffffff',
+            border: theme === 'dark' ? '1px solid #1e293b' : '1px solid #e2e8f0',
+            background: theme === 'dark' ? '#111827' : '#ffffff',
             color: theme === 'dark' ? '#e2e8f0' : '#0f172a',
-            boxShadow: '0 12px 30px rgba(15, 23, 42, 0.18)'
+            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+            fontSize: '13px',
+            padding: '10px 14px'
           }
         }}
       />

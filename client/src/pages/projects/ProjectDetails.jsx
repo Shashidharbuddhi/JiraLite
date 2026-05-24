@@ -24,28 +24,28 @@ const ProjectDetails = () => {
   if (!currentProject || loading) return <Loader label="Loading project" />;
 
   return (
-    <PageTransition className="space-y-8">
-      <Link to="/projects" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-blue-700">
-        <FiArrowLeft className="h-4 w-4" />
+    <PageTransition className="space-y-6">
+      <Link to="/projects" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-slate-400 transition-colors hover:text-slate-700 dark:hover:text-slate-200">
+        <FiArrowLeft className="h-3.5 w-3.5" />
         Back to projects
       </Link>
-      <Card hover={false} className="p-6">
-        <h1 className="text-3xl font-bold text-slate-950">{currentProject.title}</h1>
-        <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">{currentProject.description}</p>
-        <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5 text-sm font-semibold text-blue-700">
-          <FiCalendar className="h-4 w-4" />
+      <Card hover={false} className="p-5">
+        <h1 className="font-heading text-2xl font-bold text-slate-900">{currentProject.title}</h1>
+        <p className="mt-2 max-w-3xl text-[13px] leading-6 text-slate-400">{currentProject.description}</p>
+        <span className="mt-4 inline-flex items-center gap-1.5 text-[12px] font-medium text-slate-400">
+          <FiCalendar className="h-3.5 w-3.5" />
           Deadline {formatDate(getProjectDeadline(currentProject))}
-        </div>
+        </span>
       </Card>
 
       <section>
-        <h2 className="text-xl font-semibold text-slate-950">Project tasks</h2>
+        <h2 className="font-heading text-base font-semibold text-slate-800 dark:text-slate-200">Project tasks</h2>
         {tasks.length === 0 ? (
-          <Card hover={false} className="mt-4 border-dashed p-10 text-center text-sm text-slate-500">
-            No tasks have been added to this project.
-          </Card>
+          <div className="mt-3 rounded-xl border border-dashed border-slate-200 bg-white py-10 text-center shadow-card dark:border-[#1e293b] dark:bg-[#111827]">
+            <p className="text-[13px] text-slate-400">No tasks have been added to this project yet.</p>
+          </div>
         ) : (
-          <div className="mt-4 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-3 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {tasks.map((task) => (
               <TaskCard key={task._id} task={task} compact />
             ))}
