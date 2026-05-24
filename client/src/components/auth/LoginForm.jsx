@@ -44,8 +44,8 @@ const LoginForm = () => {
     >
       {/* Mobile brand — only on small screens */}
       <div className="mb-8 flex items-center gap-2.5 lg:hidden">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-[11px] font-bold text-white">
-          JL
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600">
+          <img src="/logo.png" alt="JiraLite logo" className="h-full w-full object-contain" />
         </div>
         <span className="font-heading text-base font-bold text-slate-900 dark:text-white">JiraLite</span>
       </div>

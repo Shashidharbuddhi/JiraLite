@@ -39,8 +39,8 @@ const AuthLayout = () => (
           {/* Top — Brand */}
           <div>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-xs font-bold text-white">
-                JL
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600">
+                <img src="/logo.png" alt="JiraLite logo" className="h-full w-full object-contain" />
               </div>
               <span className="font-heading text-lg font-bold text-white">JiraLite</span>
             </div>

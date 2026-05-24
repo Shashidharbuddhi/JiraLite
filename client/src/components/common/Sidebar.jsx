@@ -19,8 +19,8 @@ const Sidebar = ({ open, onClose }) => {
     <aside className="flex h-full w-64 flex-col border-r border-slate-200 bg-white dark:border-[#1e293b] dark:bg-[#09090b]">
       {/* Workspace identity */}
       <div className="flex h-14 items-center gap-3 border-b border-slate-100 px-5 dark:border-[#1e293b]">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-[11px] font-bold text-white">
-          JL
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600">
+          <img src="/logo.png" alt="JiraLite logo" className="h-full w-full object-contain" />
         </div>
         <div className="min-w-0">
           <p className="truncate font-heading text-sm font-bold text-slate-900">JiraLite</p>
