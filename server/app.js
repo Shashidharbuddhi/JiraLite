@@ -8,8 +8,21 @@ import authRoutes from './routes/authRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import activityRoutes from './routes/activityRoutes.js';
+import rateLimit from 'express-rate-limit';
 
 const app=express();
+
+const authLimiter =
+ rateLimit({
+   windowMs:
+     15 * 60 * 1000,
+
+   max: 100,
+
+   message:
+     'Too many requests'
+ });
+
 app.use(helmet());
 
 app.use(morgan('dev'))
@@ -27,6 +40,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/tasks',taskRoutes);
 app.use('/api/activity',activityRoutes);
+app.use('/api/auth',authLimiter,authRoutes);
 
 app.get('/',(req,res)=>{
     res.status(200).json({

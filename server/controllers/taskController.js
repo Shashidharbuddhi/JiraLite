@@ -23,7 +23,7 @@ async (req, res, next) => {
         createdBy: req.user._id
       });
 
-    // Create activity log
+    // Activity log
     await createActivity({
       userId: req.user._id,
       taskId: task._id,
@@ -33,10 +33,24 @@ async (req, res, next) => {
         `${req.user.name} created task "${task.title}"`
     });
 
+    const populatedTask =
+      await Task.findById(task._id)
+        .populate(
+          'assignedTo',
+          'name email'
+        )
+        .populate(
+          'projectId',
+          'title'
+        );
+
     res.status(201).json({
       success: true,
-      task
+      message:
+        'Task created successfully',
+      task: populatedTask
     });
+
   } catch (error) {
     next(error);
   }
@@ -50,26 +64,54 @@ async (req, res, next) => {
     const {
       status,
       priority,
-      search
+      search,
+      projectId,
+      assignedTo,
+      page = 1,
+      limit = 10
     } = req.query;
 
     let query = {};
 
+    // Status filter
     if (status) {
       query.status = status;
     }
 
+    // Priority filter
     if (priority) {
       query.priority =
         priority;
     }
 
+    // Search
     if (search) {
       query.title = {
         $regex: search,
         $options: 'i'
       };
     }
+
+    // Project filter
+    if (projectId) {
+      query.projectId =
+        projectId;
+    }
+
+    // Assigned user filter
+    if (assignedTo) {
+      query.assignedTo =
+        assignedTo;
+    }
+
+    const skip =
+      (Number(page) - 1) *
+      Number(limit);
+
+    const totalTasks =
+      await Task.countDocuments(
+        query
+      );
 
     const tasks =
       await Task.find(query)
@@ -80,12 +122,28 @@ async (req, res, next) => {
         .populate(
           'projectId',
           'title'
-        );
+        )
+        .sort({
+          createdAt: -1
+        })
+        .skip(skip)
+        .limit(Number(limit));
 
     res.status(200).json({
       success: true,
+      totalTasks,
+      currentPage:
+        Number(page),
+
+      totalPages:
+        Math.ceil(
+          totalTasks /
+          Number(limit)
+        ),
+
       tasks
     });
+
   } catch (error) {
     next(error);
   }
@@ -108,12 +166,16 @@ async (req, res, next) => {
         .populate(
           'projectId',
           'title'
-        );
+        )
+        .sort({
+          createdAt: -1
+        });
 
     res.status(200).json({
       success: true,
       tasks
     });
+
   } catch (error) {
     next(error);
   }
@@ -137,7 +199,18 @@ async (req, res, next) => {
       });
     }
 
-    // Store old status before update
+    // Ownership check
+    if (
+      task.createdBy.toString() !==
+      req.user._id.toString()
+    ) {
+      return res.status(403).json({
+        success: false,
+        message:
+          'Not authorized to update this task'
+      });
+    }
+
     const oldStatus =
       task.status;
 
@@ -149,16 +222,23 @@ async (req, res, next) => {
           new: true,
           runValidators: true
         }
-      );
+      )
+        .populate(
+          'assignedTo',
+          'name email'
+        )
+        .populate(
+          'projectId',
+          'title'
+        );
 
-    // Activity tracking for status change
+    // Track status movement
     if (
       req.body.status &&
       req.body.status !== oldStatus
     ) {
       await createActivity({
         userId: req.user._id,
-
         taskId:
           updatedTask._id,
 
@@ -172,8 +252,11 @@ async (req, res, next) => {
 
     res.status(200).json({
       success: true,
+      message:
+        'Task updated successfully',
       task: updatedTask
     });
+
   } catch (error) {
     next(error);
   }
@@ -197,12 +280,22 @@ async (req, res, next) => {
       });
     }
 
-    // Activity log before delete
+    // Ownership check
+    if (
+      task.createdBy.toString() !==
+      req.user._id.toString()
+    ) {
+      return res.status(403).json({
+        success: false,
+        message:
+          'Not authorized to delete this task'
+      });
+    }
+
+    // Activity log
     await createActivity({
       userId: req.user._id,
-
       taskId: task._id,
-
       projectId:
         task.projectId,
 
@@ -215,8 +308,9 @@ async (req, res, next) => {
     res.status(200).json({
       success: true,
       message:
-        'Task deleted'
+        'Task deleted successfully'
     });
+
   } catch (error) {
     next(error);
   }
