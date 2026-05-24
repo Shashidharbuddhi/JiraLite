@@ -1,8 +1,6 @@
-import Task
-from '../models/Task.js';
-
-import { validationResult }
-from 'express-validator';
+import Task from '../models/Task.js';
+import { validationResult } from 'express-validator';
+import createActivity from '../utils/createActivity.js';
 
 
 // Create Task
@@ -15,17 +13,25 @@ async (req, res, next) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        errors:
-          errors.array()
+        errors: errors.array()
       });
     }
 
     const task =
       await Task.create({
         ...req.body,
-        createdBy:
-          req.user._id
+        createdBy: req.user._id
       });
+
+    // Create activity log
+    await createActivity({
+      userId: req.user._id,
+      taskId: task._id,
+      projectId: task.projectId,
+
+      action:
+        `${req.user.name} created task "${task.title}"`
+    });
 
     res.status(201).json({
       success: true,
@@ -37,7 +43,7 @@ async (req, res, next) => {
 };
 
 
-// Get Tasks
+// Get All Tasks
 export const getTasks =
 async (req, res, next) => {
   try {
@@ -86,26 +92,23 @@ async (req, res, next) => {
 };
 
 
-// Get Project Tasks
+// Get Tasks By Project
 export const getTasksByProject =
 async (req, res, next) => {
   try {
-    const errors =
-      validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        errors:
-          errors.array()
-      });
-    }
-
     const tasks =
       await Task.find({
         projectId:
           req.params.projectId
-      });
+      })
+        .populate(
+          'assignedTo',
+          'name email'
+        )
+        .populate(
+          'projectId',
+          'title'
+        );
 
     res.status(200).json({
       success: true,
@@ -134,19 +137,42 @@ async (req, res, next) => {
       });
     }
 
+    // Store old status before update
+    const oldStatus =
+      task.status;
+
     const updatedTask =
       await Task.findByIdAndUpdate(
         req.params.id,
         req.body,
         {
-          new: true
+          new: true,
+          runValidators: true
         }
       );
 
+    // Activity tracking for status change
+    if (
+      req.body.status &&
+      req.body.status !== oldStatus
+    ) {
+      await createActivity({
+        userId: req.user._id,
+
+        taskId:
+          updatedTask._id,
+
+        projectId:
+          updatedTask.projectId,
+
+        action:
+          `${req.user.name} moved task "${updatedTask.title}" to "${updatedTask.status}"`
+      });
+    }
+
     res.status(200).json({
       success: true,
-      task:
-        updatedTask
+      task: updatedTask
     });
   } catch (error) {
     next(error);
@@ -170,6 +196,19 @@ async (req, res, next) => {
           'Task not found'
       });
     }
+
+    // Activity log before delete
+    await createActivity({
+      userId: req.user._id,
+
+      taskId: task._id,
+
+      projectId:
+        task.projectId,
+
+      action:
+        `${req.user.name} deleted task "${task.title}"`
+    });
 
     await task.deleteOne();
 
