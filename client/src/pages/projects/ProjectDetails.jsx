@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { FiArrowLeft, FiCalendar } from 'react-icons/fi';
 import Loader from '../../components/common/Loader';
+import Card from '../../components/common/Card';
+import PageTransition from '../../components/common/PageTransition';
 import TaskCard from '../../components/kanban/TaskCard';
 import { fetchProjectById } from '../../redux/slices/projectSlice';
 import { fetchTasks } from '../../redux/slices/taskSlice';
@@ -22,35 +24,35 @@ const ProjectDetails = () => {
   if (!currentProject || loading) return <Loader label="Loading project" />;
 
   return (
-    <div className="space-y-6">
+    <PageTransition className="space-y-8">
       <Link to="/projects" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-blue-700">
         <FiArrowLeft className="h-4 w-4" />
         Back to projects
       </Link>
-      <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <h1 className="text-2xl font-bold text-slate-950">{currentProject.title}</h1>
+      <Card hover={false} className="p-6">
+        <h1 className="text-3xl font-bold text-slate-950">{currentProject.title}</h1>
         <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">{currentProject.description}</p>
-        <div className="mt-5 flex items-center gap-2 text-sm text-slate-500">
+        <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5 text-sm font-semibold text-blue-700">
           <FiCalendar className="h-4 w-4" />
           Deadline {formatDate(getProjectDeadline(currentProject))}
         </div>
-      </section>
+      </Card>
 
       <section>
-        <h2 className="text-lg font-semibold text-slate-950">Project tasks</h2>
+        <h2 className="text-xl font-semibold text-slate-950">Project tasks</h2>
         {tasks.length === 0 ? (
-          <div className="mt-4 rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-500">
+          <Card hover={false} className="mt-4 border-dashed p-10 text-center text-sm text-slate-500">
             No tasks have been added to this project.
-          </div>
+          </Card>
         ) : (
-          <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-4 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {tasks.map((task) => (
               <TaskCard key={task._id} task={task} compact />
             ))}
           </div>
         )}
       </section>
-    </div>
+    </PageTransition>
   );
 };
 

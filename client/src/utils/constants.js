@@ -4,8 +4,8 @@ export const PRIORITIES = ['Low', 'Medium', 'High', 'Critical'];
 
 export const priorityStyles = {
   Low: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  Medium: 'bg-sky-50 text-sky-700 ring-sky-200',
-  High: 'bg-amber-50 text-amber-700 ring-amber-200',
+  Medium: 'bg-yellow-50 text-yellow-700 ring-yellow-200',
+  High: 'bg-orange-50 text-orange-700 ring-orange-200',
   Critical: 'bg-rose-50 text-rose-700 ring-rose-200'
 };
 

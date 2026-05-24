@@ -13,8 +13,18 @@
     margin: 0;
     min-width: 320px;
     color: #0f172a;
-    background: #f8fafc;
+    background:
+      radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 34rem),
+      linear-gradient(135deg, #f8fafc 0%, #ffffff 52%, #f8fafc 100%);
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    transition: background 240ms ease, color 240ms ease;
+  }
+
+  .dark body {
+    color: #e2e8f0;
+    background:
+      radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 34rem),
+      linear-gradient(135deg, #020617 0%, #0f172a 54%, #111827 100%);
   }
 
   button,
@@ -31,5 +41,71 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  .skeleton-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skeleton-shimmer::after {
+    position: absolute;
+    inset: 0;
+    content: '';
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.72), transparent);
+    animation: shimmer 1.6s infinite;
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .dark .skeleton-shimmer {
+    background-color: rgba(51, 65, 85, 0.72);
+  }
+
+  .dark .skeleton-shimmer::after {
+    background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.18), transparent);
+  }
+
+  .dark [class*='text-slate-950'] {
+    color: #f8fafc;
+  }
+
+  .dark [class*='text-slate-900'] {
+    color: #e2e8f0;
+  }
+
+  .dark [class*='text-slate-800'],
+  .dark [class*='text-slate-700'] {
+    color: #cbd5e1;
+  }
+
+  .dark [class*='text-slate-600'],
+  .dark [class*='text-slate-500'],
+  .dark [class*='text-slate-400'] {
+    color: #94a3b8;
+  }
+
+  .dark [class*='bg-white'] {
+    background-color: rgba(15, 23, 42, 0.86);
+  }
+
+  .dark [class*='bg-slate-50'],
+  .dark [class*='bg-slate-100'] {
+    background-color: rgba(30, 41, 59, 0.72);
+  }
+
+  .dark [class*='border-slate-100'],
+  .dark [class*='border-slate-200'],
+  .dark [class*='border-slate-300'] {
+    border-color: rgba(51, 65, 85, 0.95);
+  }
+
+  .dark [class*='divide-slate-100'] > :not([hidden]) ~ :not([hidden]) {
+    border-color: rgba(51, 65, 85, 0.95);
   }
 }
