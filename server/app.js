@@ -31,7 +31,23 @@ app.use(express.json())
 
 app.use(express.urlencoded({extended:true}));
 
-app.use(cors())
+app.use(
+  cors({
+    origin: [
+      'http://localhost:5173',
+      'https://jira-lite-one.vercel.app'
+    ],
+    methods: [
+      'GET',
+      'POST',
+      'PUT',
+      'PATCH',
+      'DELETE',
+      'OPTIONS'
+    ],
+    credentials: true
+  })
+);
 
 
 app.use(cookieParser());
