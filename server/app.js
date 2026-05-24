@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import errorHandler from './middlewares/errorMiddleware.js'
 import authRoutes from './routes/authRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
+import taskRoutes from './routes/taskRoutes.js';
 
 const app=express();
 app.use(helmet());
@@ -23,6 +24,7 @@ app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/api/tasks',taskRoutes);
 
 app.get('/',(req,res)=>{
     res.status(200).json({
