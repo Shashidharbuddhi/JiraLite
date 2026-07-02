@@ -24,6 +24,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+*.out
+*.err
 
 # Test/runtime output
 coverage/
@@ -34,6 +36,7 @@ coverage/
 # Local deployment/tooling
 .vercel/
 .turbo/
+.netlify/
 
 # Framework caches
 .next/

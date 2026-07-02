@@ -26,14 +26,6 @@ export const registerUser = createAsyncThunk('auth/register', async (payload, { 
   }
 });
 
-export const verifyEmailRegistration = createAsyncThunk('auth/verify-email', async (token, { rejectWithValue }) => {
-  try {
-    return await authService.verifyEmailRegistration(token);
-  } catch (error) {
-    return rejectWithValue(getErrorMessage(error, 'Email verification failed'));
-  }
-});
-
 export const loginUser = createAsyncThunk('auth/login', async (payload, { rejectWithValue }) => {
   try {
     return await authService.login(payload);
@@ -73,23 +65,11 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = null;
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(verifyEmailRegistration.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(verifyEmailRegistration.fulfilled, (state, action) => {
-        state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
         persistSession(action.payload);
       })
-      .addCase(verifyEmailRegistration.rejected, (state, action) => {
+      .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

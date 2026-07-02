@@ -6,11 +6,6 @@ export const authService = {
     return data;
   },
 
-  verifyEmailRegistration: async (token) => {
-    const { data } = await api.get(`/auth/verify-email/${token}`);
-    return data;
-  },
-
   login: async (payload) => {
     const endpoint = payload.portal === 'admin' ? '/auth/admin/login' : '/auth/login';
     const { data } = await api.post(endpoint, payload);

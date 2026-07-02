@@ -1,6 +1,5 @@
 import User, { USER_ROLES } from '../models/User.js';
 import Workspace from '../models/Workspace.js';
-import { isGmailAddress } from '../utils/emailPolicy.js';
 
 const getWorkspaceWithRelations = (workspaceId) =>
   Workspace.findById(workspaceId)
@@ -36,13 +35,6 @@ export const inviteWorkspaceMember = async (req, res, next) => {
       return res.status(400).json({
         success: false,
         message: 'Invalid workspace role'
-      });
-    }
-
-    if (!isGmailAddress(normalizedEmail)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Workspace accounts must use a valid Gmail address'
       });
     }
 

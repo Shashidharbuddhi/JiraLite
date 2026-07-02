@@ -48,8 +48,8 @@ const RegisterForm = () => {
     const result = await dispatch(registerUser(values));
 
     if (registerUser.fulfilled.match(result)) {
-      toast.success(result.payload.message);
-      navigate('/login', { replace: true });
+      toast.success('Workspace created');
+      navigate('/', { replace: true });
       return;
     }
 
@@ -112,14 +112,11 @@ const RegisterForm = () => {
           <Input
             label="Work Email"
             type="email"
-            placeholder="yourname@gmail.com"
+            placeholder="you@company.com"
             error={errors.email?.message}
             {...register('email', {
               required: 'Email is required',
-              pattern: {
-                value: /^[a-zA-Z0-9._%+-]+@gmail\.com$/i,
-                message: 'Use a valid Gmail address'
-              }
+              pattern: { value: /^\S+@\S+$/i, message: 'Enter a valid email' }
             })}
           />
 
@@ -135,7 +132,7 @@ const RegisterForm = () => {
           />
 
           <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-slate-300">
-            The first user created here becomes the workspace admin. We only allow real Gmail accounts here, and the workspace is created after you verify the link sent to that Gmail inbox.
+            The first user created here is treated as the workspace admin. Members should use the member login option on the shared login page after they are invited.
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

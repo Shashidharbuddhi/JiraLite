@@ -7,7 +7,6 @@ import Register from '../pages/auth/Register';
 import AdminLogin from '../pages/auth/AdminLogin';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import ResetPassword from '../pages/auth/ResetPassword';
-import VerifyEmail from '../pages/auth/VerifyEmail';
 import Dashboard from '../pages/dashboard/Dashboard';
 import Projects from '../pages/projects/Projects';
 import ProjectDetails from '../pages/projects/ProjectDetails';
@@ -22,7 +21,6 @@ const AppRoutes = () => (
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/verify-email/:token" element={<VerifyEmail />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
     </Route>
 

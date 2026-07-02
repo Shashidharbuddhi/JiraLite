@@ -14,6 +14,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+*.out
+*.err
 
 # Dependency and build folders in any package
 node_modules/
@@ -50,6 +52,8 @@ out/
 .vercel/
 .turbo/
 .envrc
+.netlify/
+*.local
 
 # Framework and runtime caches
 .next/

@@ -5,12 +5,12 @@ A modern SaaS-style project management workspace with role-based authentication,
 ## Features
 - Role-based authentication for `platform_admin`, `workspace_admin`, and `workspace_member`
 - Separate admin and member login experience
-- Gmail-verified workspace creation during registration
+- Workspace creation during registration
 - Project and task CRUD
 - Workspace-wide search across projects, tasks, and activity
 - Kanban-ready task workflow
 - Activity tracking
-- Forgot password and reset password flows for verified accounts
+- Forgot password and reset password flows
 - Responsive frontend rebuilt from scratch
 
 ## Tech Stack
@@ -40,10 +40,10 @@ CLIENT_URL=http://localhost:5173
 
 # Optional seeded admin overrides
 PLATFORM_ADMIN_NAME=Platform Admin
-PLATFORM_ADMIN_EMAIL=admin@jiralite.local
+PLATFORM_ADMIN_EMAIL=admin@jiralite.app
 PLATFORM_ADMIN_PASSWORD=Admin@123456
 
-# Required for Gmail verification and forgot-password email delivery
+# Optional for forgot-password email delivery
 MAIL_FROM="JiraLite <no-reply@jiralite.local>"
 SMTP_HOST=smtp.example.com
 SMTP_PORT=587
@@ -60,25 +60,14 @@ VITE_API_URL=http://localhost:5000/api
 
 ### Default Admin Access
 
-If you do not override the platform admin environment variables, the server seeds this admin automatically:
+If you do not override the platform admin environment variables, the server seeds this admin automatically in local and deployed environments:
 
 ```txt
-Email: admin@jiralite.local
+Email: admin@jiralite.app
 Password: Admin@123456
 ```
 
 Use the admin portal from `/admin/login`, or choose `Admin Login` from the shared login screen.
-
-### Gmail Verification
-
-Workspace self-registration now accepts only `@gmail.com` addresses and does not create the account immediately.
-
-Flow:
-- Submit name, workspace name, Gmail address, and password
-- JiraLite emails a verification link to that Gmail inbox
-- Open `/verify-email/:token` from the email to finish creating the workspace and first workspace admin account
-
-Workspace admins can still add members manually, but member accounts must also use Gmail addresses.
 
 ### Install Dependencies
 
@@ -116,13 +105,12 @@ Search requests go through `GET /api/search?q=...`.
 The password reset flow is now available through:
 - `POST /api/auth/forgot-password`
 - `POST /api/auth/reset-password/:token`
-- `GET /api/auth/verify-email/:token`
 
 Frontend routes:
 - `/forgot-password`
 - `/reset-password/:token`
 
-Verification links expire after 30 minutes. Reset tokens are hashed before storage and expire after 15 minutes.
+Reset tokens are hashed before storage and expire after 15 minutes.
 
 ## Scripts
 

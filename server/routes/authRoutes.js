@@ -5,8 +5,7 @@ import {
   loginAdmin,
   loginUser,
   registerUser,
-  resetPassword,
-  verifyEmailRegistration
+  resetPassword
 } from '../controllers/authController.js';
 import { protect } from '../middlewares/authMiddleware.js';
 import {
@@ -23,7 +22,6 @@ router.post('/login', loginValidation, loginUser);
 router.post('/admin/login', loginValidation, loginAdmin);
 router.post('/forgot-password', forgotPasswordValidation, forgotPassword);
 router.post('/reset-password/:token', resetPasswordValidation, resetPassword);
-router.get('/verify-email/:token', verifyEmailRegistration);
 router.get('/me', protect, getMe);
 
 export default router;

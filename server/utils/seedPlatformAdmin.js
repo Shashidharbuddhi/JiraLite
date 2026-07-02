@@ -1,9 +1,15 @@
 import User, { USER_ROLES } from '../models/User.js';
 
+export const DEFAULT_PLATFORM_ADMIN = {
+  name: 'Platform Admin',
+  email: 'admin@jiralite.app',
+  password: 'Admin@123456'
+};
+
 const seedPlatformAdmin = async () => {
-  const adminEmail = process.env.PLATFORM_ADMIN_EMAIL || 'admin@jiralite.local';
-  const adminPassword = process.env.PLATFORM_ADMIN_PASSWORD || 'Admin@123456';
-  const adminName = process.env.PLATFORM_ADMIN_NAME || 'Platform Admin';
+  const adminEmail = (process.env.PLATFORM_ADMIN_EMAIL || DEFAULT_PLATFORM_ADMIN.email).trim().toLowerCase();
+  const adminPassword = process.env.PLATFORM_ADMIN_PASSWORD || DEFAULT_PLATFORM_ADMIN.password;
+  const adminName = process.env.PLATFORM_ADMIN_NAME || DEFAULT_PLATFORM_ADMIN.name;
 
   const existingAdmin = await User.findOne({ email: adminEmail });
 
@@ -14,6 +20,7 @@ const seedPlatformAdmin = async () => {
       existingAdmin.role = USER_ROLES.PLATFORM_ADMIN;
       existingAdmin.workspaceId = null;
       existingAdmin.isSuspended = false;
+      existingAdmin.emailVerified = true;
       shouldSave = true;
     }
 
@@ -24,10 +31,21 @@ const seedPlatformAdmin = async () => {
       shouldSave = true;
     }
 
+    if (existingAdmin.name !== adminName) {
+      existingAdmin.name = adminName;
+      shouldSave = true;
+    }
+
+    if (!existingAdmin.emailVerified) {
+      existingAdmin.emailVerified = true;
+      shouldSave = true;
+    }
+
     if (shouldSave) {
       await existingAdmin.save();
     }
 
+    console.log(`Platform admin ready: ${adminEmail}`);
     return;
   }
 
@@ -36,8 +54,11 @@ const seedPlatformAdmin = async () => {
     email: adminEmail,
     password: adminPassword,
     role: USER_ROLES.PLATFORM_ADMIN,
-    workspaceId: null
+    workspaceId: null,
+    emailVerified: true
   });
+
+  console.log(`Platform admin ready: ${adminEmail}`);
 };
 
 export default seedPlatformAdmin;
