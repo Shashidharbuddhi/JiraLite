@@ -1,31 +1,40 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const projectSchema= new mongoose.Schema({
-    title:{
-        type:String,
-        required:true,
-        trim:true
+const projectSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true
     },
-
-    description:{
-        type:String,
-        required:true
+    description: {
+      type: String,
+      required: true
     },
-    deadLine:{
-        type:Date
+    deadLine: {
+      type: Date
     },
-    members:[{
+    workspaceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Workspace',
+      required: true
+    },
+    members: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref:"User"
-    }],
-    createdBy:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref:"User",
-        required:true
+        ref: 'User'
+      }
+    ],
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
     }
-},{
-    timestamps:true
-});
+  },
+  {
+    timestamps: true
+  }
+);
 
-const Project=mongoose.model('Project',projectSchema);
+const Project = mongoose.model('Project', projectSchema);
 export default Project;

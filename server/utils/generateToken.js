@@ -1,13 +1,17 @@
 import jwt from 'jsonwebtoken';
+import { normalizeUserRole } from '../models/User.js';
 
-const generateToken=(id)=>{
-    return jwt.sign(
-        {id},
-        process.env.JWT_SECRET,
-        {
-            expiresIn:'7d'
-        }
-    )
-}
+const generateToken = (user) =>
+  jwt.sign(
+    {
+      userId: user._id,
+      role: normalizeUserRole(user.role),
+      workspaceId: user.workspaceId || null
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '7d'
+    }
+  );
 
 export default generateToken;

@@ -1,78 +1,142 @@
 import { useEffect } from 'react';
+import { FiActivity, FiArrowUpRight, FiBriefcase, FiCheckCircle, FiClock } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
-import { FiCheckCircle, FiClock, FiFolder, FiList } from 'react-icons/fi';
-import ActivityFeed from '../../components/dashboard/ActivityFeed';
-import StatsCard from '../../components/dashboard/StatsCard';
-import PageTransition from '../../components/common/PageTransition';
-import { StatSkeleton } from '../../components/common/Skeleton';
+import { Link } from 'react-router-dom';
+import Loader from '../../components/common/Loader';
+import Button from '../../components/common/Button';
 import { fetchProjects } from '../../redux/slices/projectSlice';
 import { fetchActivity, fetchTasks } from '../../redux/slices/taskSlice';
+import { formatDate } from '../../utils/formatters';
+import AdminConsole from '../admin/AdminConsole';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const { projects, loading: projectsLoading } = useSelector((state) => state.projects);
-  const { tasks, loading: tasksLoading, activity, activityLoading } = useSelector((state) => state.tasks);
+  const { user } = useSelector((state) => state.auth);
+  const { projects, loading: projectLoading } = useSelector((state) => state.projects);
+  const { tasks, activity, loading: taskLoading, activityLoading } = useSelector((state) => state.tasks);
 
   useEffect(() => {
+    if (user?.role === 'platform_admin') {
+      return;
+    }
     dispatch(fetchProjects());
-    dispatch(fetchTasks({ limit: 100 }));
+    dispatch(fetchTasks({ limit: 6 }));
     dispatch(fetchActivity());
-  }, [dispatch]);
+  }, [dispatch, user?.role]);
 
-  const completed = tasks.filter((task) => task.status === 'Done').length;
-  const pending = tasks.length - completed;
-  const inProgress = tasks.filter((task) => task.status === 'In Progress').length;
+  if (user?.role === 'platform_admin') {
+    return <AdminConsole />;
+  }
 
-  const completionRate = tasks.length ? Math.round((completed / tasks.length) * 100) : 0;
-  const loading = projectsLoading && tasksLoading;
+  if (projectLoading && taskLoading) {
+    return <Loader label="Loading your workspace overview" />;
+  }
+
+  const doneTasks = tasks.filter((task) => task.status === 'Done').length;
+  const inFlightTasks = tasks.filter((task) => task.status === 'In Progress').length;
+  const reviewTasks = tasks.filter((task) => task.status === 'Review').length;
+
+  const metrics = [
+    { label: 'Projects', value: projects.length, icon: FiBriefcase, tone: 'text-cyan-300' },
+    { label: 'Tasks In Progress', value: inFlightTasks, icon: FiClock, tone: 'text-amber-300' },
+    { label: 'Tasks In Review', value: reviewTasks, icon: FiActivity, tone: 'text-violet-300' },
+    { label: 'Completed', value: doneTasks, icon: FiCheckCircle, tone: 'text-emerald-300' }
+  ];
 
   return (
-    <PageTransition className="space-y-6">
-      <div>
-        <h1 className="font-heading text-2xl font-bold text-slate-900">Dashboard</h1>
-        <p className="mt-1 text-[13px] text-slate-400">A pulse on projects, work in motion, and recent changes.</p>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {loading ? (
-          [1, 2, 3, 4].map((item) => <StatSkeleton key={item} />)
-        ) : (
-          <>
-            <StatsCard title="Total Projects" value={projects.length} icon={FiFolder} tone="blue" />
-            <StatsCard title="Total Tasks" value={tasks.length} icon={FiList} tone="slate" />
-            <StatsCard title="Completed" value={completed} icon={FiCheckCircle} tone="green" />
-            <StatsCard title="Pending" value={pending} icon={FiClock} tone="amber" />
-          </>
-        )}
-      </div>
-
-      {/* Productivity insight */}
-      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-card dark:border-[#1e293b] dark:bg-[#111827]">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+    <div className="space-y-5">
+      <section className="glass-panel rounded-[30px] p-6 sm:p-8">
+        <p className="eyebrow">Overview</p>
+        <div className="mt-4 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h2 className="font-heading text-base font-semibold text-slate-900">Productivity insight</h2>
-            <p className="mt-1 text-[13px] text-slate-500">
-              <span className="font-semibold text-slate-900">{completionRate}%</span> of sprint tasks completed
-              {inProgress > 0 && <> · <span className="font-medium text-blue-600">{inProgress}</span> in progress</>}
+            <h1 className="text-4xl font-bold text-white text-balance">
+              {user?.role === 'platform_admin' ? 'Platform control cockpit' : 'Your delivery workspace at a glance'}
+            </h1>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300">
+              The frontend has been rebuilt around a more product-like command center. From here you can review project health, current workload, and the latest activity without the old dashboard framing.
             </p>
           </div>
-          <div className="w-full lg:max-w-sm">
-            <div className="flex justify-between text-[11px] font-medium text-slate-400">
-              <span>Progress</span>
-              <span>{completionRate}%</span>
-            </div>
-            <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-100 dark:bg-[#18181b]">
-              <div
-                className="h-full rounded-full bg-blue-600 transition-all duration-700"
-                style={{ width: `${completionRate}%` }}
-              />
-            </div>
+          <div className="flex flex-wrap gap-3">
+            <Link to="/projects">
+              <Button variant="primary">
+                Open Projects
+                <FiArrowUpRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link to="/tasks">
+              <Button variant="secondary">Review Tasks</Button>
+            </Link>
           </div>
         </div>
-      </div>
+      </section>
 
-      <ActivityFeed activities={activity} loading={activityLoading} />
-    </PageTransition>
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {metrics.map((metric) => (
+          <div key={metric.label} className="metric-tile">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-medium text-slate-400">{metric.label}</p>
+              <metric.icon className={`h-5 w-5 ${metric.tone}`} />
+            </div>
+            <p className="mt-6 text-4xl font-bold text-white">{metric.value}</p>
+          </div>
+        ))}
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
+        <div className="glass-panel rounded-[30px] p-6">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="eyebrow">Recent Projects</p>
+              <h2 className="mt-3 text-2xl font-bold text-white">Active workstreams</h2>
+            </div>
+            <Link to="/projects" className="text-sm font-semibold text-cyan-300">
+              See all
+            </Link>
+          </div>
+
+          <div className="mt-6 space-y-3">
+            {projects.slice(0, 4).map((project) => (
+              <Link
+                key={project._id}
+                to={`/projects/${project._id}`}
+                className="block rounded-[24px] border border-white/10 bg-white/[0.03] p-4 transition-colors hover:bg-white/[0.06]"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-lg font-semibold text-white">{project.title}</p>
+                    <p className="mt-2 text-sm leading-6 text-slate-400">{project.description}</p>
+                  </div>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">
+                    {project.members?.length || 0} members
+                  </span>
+                </div>
+              </Link>
+            ))}
+
+            {!projects.length && <p className="text-sm text-slate-400">No projects yet. Create one from the Projects page.</p>}
+          </div>
+        </div>
+
+        <div className="glass-panel rounded-[30px] p-6">
+          <p className="eyebrow">Activity Feed</p>
+          <h2 className="mt-3 text-2xl font-bold text-white">Latest activity</h2>
+
+          {activityLoading ? (
+            <Loader label="Loading activity" />
+          ) : (
+            <div className="mt-6 space-y-3">
+              {activity.slice(0, 6).map((item) => (
+                <div key={item._id} className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
+                  <p className="text-sm font-medium text-slate-100">{item.action}</p>
+                  <p className="mt-2 text-xs uppercase tracking-[0.18em] text-slate-500">{formatDate(item.createdAt)}</p>
+                </div>
+              ))}
+              {!activity.length && <p className="text-sm text-slate-400">Activity will appear here once tasks start moving.</p>}
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
   );
 };
 

@@ -3,7 +3,8 @@ import api from './axiosInstance';
 const normalizeProjectPayload = (payload) => ({
   title: payload.title,
   description: payload.description,
-  deadLine: payload.deadLine || payload.deadline || undefined
+  deadLine: payload.deadLine || payload.deadline || undefined,
+  workspaceId: payload.workspaceId || undefined
 });
 
 export const projectService = {
