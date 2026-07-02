@@ -1,33 +1,29 @@
 import express from 'express';
-
 import {
-  registerUser,
+  forgotPassword,
+  getMe,
+  loginAdmin,
   loginUser,
-  getMe
+  registerUser,
+  resetPassword,
+  verifyEmailRegistration
 } from '../controllers/authController.js';
-
-import protect
-from '../middlewares/authMiddleware.js';
-
+import { protect } from '../middlewares/authMiddleware.js';
 import {
+  forgotPasswordValidation,
+  loginValidation,
   registerValidation,
-  loginValidation
+  resetPasswordValidation
 } from '../validators/authValidator.js';
 
 const router = express.Router();
 
-router.post(
-  '/register',
-  registerValidation,
-  registerUser
-);
-
-router.post(
-  '/login',
-  loginValidation,
-  loginUser
-);
-
+router.post('/register', registerValidation, registerUser);
+router.post('/login', loginValidation, loginUser);
+router.post('/admin/login', loginValidation, loginAdmin);
+router.post('/forgot-password', forgotPasswordValidation, forgotPassword);
+router.post('/reset-password/:token', resetPasswordValidation, resetPassword);
+router.get('/verify-email/:token', verifyEmailRegistration);
 router.get('/me', protect, getMe);
 
 export default router;
