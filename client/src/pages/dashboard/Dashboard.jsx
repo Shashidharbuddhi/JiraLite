@@ -53,7 +53,7 @@ const Dashboard = () => {
               {user?.role === 'platform_admin' ? 'Platform control cockpit' : 'Your delivery workspace at a glance'}
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300">
-              The frontend has been rebuilt around a more product-like command center. From here you can review project health, current workload, and the latest activity without the old dashboard framing.
+              Why be a mess when you can handle the workspace efficiently!!.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">

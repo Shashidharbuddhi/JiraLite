@@ -91,7 +91,7 @@ const RegisterForm = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-5">
           <Input
             label="Your Name"
-            placeholder="Shashidhar"
+            placeholder="Name"
             error={errors.name?.message}
             {...register('name', {
               required: 'Name is required',
