@@ -58,16 +58,7 @@ Create a `.env` file in the `client` folder:
 VITE_API_URL=http://localhost:5000/api
 ```
 
-### Default Admin Access
 
-If you do not override the platform admin environment variables, the server seeds this admin automatically in local and deployed environments:
-
-```txt
-Email: admin@jiralite.app
-Password: Admin@123456
-```
-
-Use the admin portal from `/admin/login`, or choose `Admin Login` from the shared login screen.
 
 ### Install Dependencies
 
